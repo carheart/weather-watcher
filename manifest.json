@@ -1,0 +1,34 @@
+{
+ "package": "Weather watcher",
+  "config": [
+    {
+      "name": "forecast_url_setter",
+      "label": "Specify URL to XML file from YR.NO website for your farmbot location",
+      "value": "https://www.yr.no/place/Slovakia/Nitra/Radava/forecast.xml"
+    },
+    {
+      "name": "period_to_check_setter",
+      "label": "Specify how much hours of forecast to consider - (enter number 6,12,18 or 24)",
+      "value": 12
+    },
+    {
+      "name": "skip_watering_limit_setter",
+      "label": "Precipitation in mm due to which watering should be skipped",
+      "value": 2
+    },
+    {
+      "name": "watering_sequence_setter",
+      "label": "Name of your watering sequence",
+      "value": "None"
+    }
+  ],
+ "language": "python",
+ "author": "FarmBot, Inc.",
+ "description": "Check weather forecast to turn off watering",
+ "version": "0.0.1",
+ "min_os_version_major": 6,
+ "url": "https://raw.githubusercontent.com/carheart/weather-watcher/master/manifest.json",
+ "zip": "https://github.com/carheart/weather-watcher/archive/master.zip",
+ "executable": "python",
+ "args": ["weather-watcher-master/weather_watcher.py"]
+}
