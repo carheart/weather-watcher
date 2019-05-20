@@ -4,26 +4,30 @@
 
 import os
 import json
-
 import requests
 from xml.dom.minidom import parse, parseString
+from farmware_tools import device
+from farmware_tools import get_config_value
 
 #https://docs.python.org/3/library/xml.dom.minidom.html
 
-#from farmware_tools import device
-#from farmware_tools import get_config_value
 '''
-"name": "forecast_url_setter",
-"label": "Specify URL to XML file from YR.NO website for your farmbot location",
-"value": "https://www.yr.no/place/Slovakia/Nitra/Radava/forecast.xml"
-},
-{
-"name": "period_to_check_setter",
-"label": "Specify how much hours of forecast to consider - (enter number 6,12,18 or 24)",
-"value": 12
-},
-{
-"name": "skip_watering_limit_setter",
+https://www.mkyong.com/python/python-read-xml-file-dom-example/
+from xml.dom import minidom
+
+doc = minidom.parse("staff.xml")
+
+# doc.getElementsByTagName returns NodeList
+name = doc.getElementsByTagName("name")[0]
+print(name.firstChild.data)
+
+staffs = doc.getElementsByTagName("staff")
+for staff in staffs:
+        sid = staff.getAttribute("id")
+        nickname = staff.getElementsByTagName("nickname")[0]
+        salary = staff.getElementsByTagName("salary")[0]
+        print("id:%s, nickname:%s, salary:%s" %
+              (sid, nickname.firstChild.data, salary.firstChild.data))
 '''
 
 xml_url = get_config_value(farmware_name='Weather watcher', config_name='forecast_url_setter', value_type=str)
@@ -49,20 +53,19 @@ if skip_watering_limit < 0:
 #  self.input_sequence_beforemove  = os.environ.get(prefix+"_sequence_beforemove", 'None').split(",")
 # https://stackoverflow.com/questions/4906977/how-to-access-environment-variable-values
 
-switch_camera_to = switch_camera_to.strip()
-switch_camera_to = switch_camera_to.upper()
 
-if switch_camera_to not in ("RPI", "USB"):
-    message = "Wrong input to switch camera provided:  " + switch_camera_to + ". Values USB or RPI shd be used"
-    device.log(message, message_type='info')
-else:
-    camera = os.getenv('camera', 'USB')
-    device.set_user_env('camera', json.dumps(switch_camera_to))
-    message = "Camera was switched to " + switch_camera_to
-    device.log(message, message_type='success')
+response=requests.get(xml_url)
+with open('yrno_feed.xml', 'wb') as file:
+    file.write(response.content)
+
+yrno_dom = parse("yrno_feed.xml")
+forecast = yrno_dom.getElementsByTagName("time")[0]
 
 
-
-
-
-
+until_value = forecast.getAttribute("to")
+temp = forecast.getElementsByTagName("symbol")[0]
+fcst_text = temp.getAttribute("name")
+temp2 = forecast.getElementsByTagName("precipitation")[0]
+precip = temp2.getAttribute("value")
+message = "Forecast until:"+until_value+" is:"+fcst_text+" with precipitation:"+precip+"mm"
+device.log(message, message_type='info')
