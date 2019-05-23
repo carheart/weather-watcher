@@ -5,6 +5,7 @@
 import os
 import json
 import requests
+import sys
 from xml.dom.minidom import parse, parseString
 from farmware_tools import device
 from farmware_tools import get_config_value
@@ -55,10 +56,24 @@ if skip_watering_limit < 0:
 
 
 response=requests.get(xml_url)
-with open('yrno_feed.xml', 'wb') as file:
-    file.write(response.content)
+try:
+    with open('yrno_feed2.xml', 'w') as file:
+        file.write(response.content)
+except OSError as err:
+    message = "OS error: {0}".format(err)
+    device.log(message, message_type='info')
 
-yrno_dom = parse("yrno_feed.xml")
+except ValueError:
+    message = "value error."
+    device.log(message, message_type='info')
+except:
+    message = "Unexpected error:", sys.exc_info()[0]
+    device.log(message, message_type='info')
+    raise
+
+yrno_dom = parse("yrno_feed2.xml")
+
+
 forecast = yrno_dom.getElementsByTagName("time")[0]
 
 
