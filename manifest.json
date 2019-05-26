@@ -25,7 +25,7 @@
  "language": "python",
  "author": "FarmBot, Inc.",
  "description": "Check weather forecast to turn off watering",
- "version": "0.0.1",
+ "version": "0.0.3",
  "min_os_version_major": 6,
  "url": "https://raw.githubusercontent.com/carheart/weather-watcher/master/manifest.json",
  "zip": "https://github.com/carheart/weather-watcher/archive/master.zip",

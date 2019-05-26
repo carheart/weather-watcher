@@ -5,7 +5,7 @@
 import os
 import json
 import requests
-from xml.dom.minidom import parse, parseString
+from xml.dom.minidom import parse
 from farmware_tools import device
 from farmware_tools import get_config_value
 
@@ -54,11 +54,15 @@ if skip_watering_limit < 0:
 # https://stackoverflow.com/questions/4906977/how-to-access-environment-variable-values
 
 
-response=requests.get(xml_url)
-with open('yrno_feed.xml', 'wb') as file:
-    file.write(response.content)
+try:
+    response=requests.get(xml_url)
+    with open('yrno_feed123.xml', 'wb') as file:
+        file.write(response.content)
+except:
+    device.log("problem writing file", message_type='warn')
 
-yrno_dom = parse("yrno_feed.xml")
+
+yrno_dom = parse("yrno_feed123.xml")
 forecast = yrno_dom.getElementsByTagName("time")[0]
 
 
